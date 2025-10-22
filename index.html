@@ -316,7 +316,29 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             min-height: 500px;
-            background: url('./KatjaBild.jpeg') center/cover;
+            background: 
+                url('KatjaBild.jpeg') center/cover,
+                linear-gradient(135deg, var(--accent-cream) 0%, var(--primary-light) 100%);
+            position: relative;
+        }
+
+        /* Lade-Fallback für das Profilbild */
+        .about-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="%235a8c72" stroke-width="4"/></svg>') center no-repeat,
+                var(--accent-cream);
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        .about-img.loaded::before {
+            opacity: 0;
         }
 
         .about-text {
@@ -860,6 +882,16 @@
                 width: 50px;
                 height: 50px;
                 font-size: 24px;
+            }
+            
+            /* Mobile Optimierung für das Profilbild */
+            .about-img {
+                min-height: 350px;
+                order: -1; /* Bild kommt zuerst auf Mobile */
+            }
+            
+            .about-content {
+                gap: 2rem;
             }
         }
 
@@ -1556,6 +1588,23 @@
         window.addEventListener('scroll', fadeInOnScroll);
         // Trigger once on load
         window.addEventListener('load', fadeInOnScroll);
+
+        // Bild-Lade-Fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            const aboutImg = document.querySelector('.about-img');
+            const img = new Image();
+            
+            img.onload = function() {
+                aboutImg.classList.add('loaded');
+            };
+            
+            img.onerror = function() {
+                // Bild konnte nicht geladen werden, Fallback bleibt sichtbar
+                console.log('Profilbild konnte nicht geladen werden');
+            };
+            
+            img.src = 'Bildkatja.jpeg';
+        });
     </script>
 </body>
 </html>
